@@ -10,7 +10,6 @@ class Home extends Component {
                nextPage: null,
                beforePage: [],
                error: false,
-               tmp: [],
           }
      }
      componentWillMount =()=>{
@@ -26,15 +25,18 @@ class Home extends Component {
 
           var $this = this;
 
-          var posts = 'https://www.reddit.com/hot.json';
-
-          if (page !== undefined){
-               posts = posts + '?' + direction + '=' + page;
-          }
+          var posts = 'https://www.reddit.com/hot.json?limit=5&';
 
           var  beforePage = this.state.beforePage;
           if (direction === 'after'){
                beforePage.push(this.state.nextPage);
+          }
+
+          console.log(beforePage.length);
+          if (page !== undefined){
+               if (beforePage.length > 0){
+                    posts = posts + direction + '=' + page;
+               }
           }
 
           axios.get(posts)
@@ -44,10 +46,10 @@ class Home extends Component {
                window.scrollTo(0,0);
 
                if (direction === 'before'){
-                    console.log('before');
+                    console.log("before", page);
                     $this.setState({hotposts: posts.children, nextPage: page, beforePage: beforePage});
                }else{
-                    console.log('after', posts);
+                    console.log("after", posts.after);
                     $this.setState({hotposts: posts.children, nextPage: posts.after, beforePage: beforePage});
                }
 
