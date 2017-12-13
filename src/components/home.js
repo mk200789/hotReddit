@@ -35,9 +35,11 @@ class Home extends Component {
           console.log(beforePage.length);
           if (page !== undefined){
                if (beforePage.length > 0){
-                    posts = `${posts}direction=${page}`;
+                    posts = `${posts}${direction}=${page}`;
                }
           }
+
+          console.log(posts);
 
           axios.get(posts)
           .then(function(response){
