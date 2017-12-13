@@ -35,7 +35,7 @@ class Home extends Component {
           console.log(beforePage.length);
           if (page !== undefined){
                if (beforePage.length > 0){
-                    posts = posts + direction + '=' + page;
+                    posts = `${posts}direction=${page}`;
                }
           }
 
@@ -65,10 +65,10 @@ class Home extends Component {
                return (
                     <div key={idx} className='posts'>
                          <div className='postsImage'>
-                              {posts.data.thumbnail.includes('http')? <img src={posts.data.thumbnail}></img> : <img src={require('../images/no_thumbnail.png')}></img>}
+                              {posts.data.thumbnail.includes('http')? <img src={posts.data.thumbnail} alt='thumbnail'></img> : <img src={require('../images/no_thumbnail.png')} alt='thumbnail'></img>}
                          </div>
                          <div className='postsContent'>
-                              <Link to='/#' className='postsLink'>{posts.data.title}</Link>
+                              <Link to={`/posts=${posts.data.id}`} className='postsLink'>{posts.data.title}</Link>
                          </div>
                     </div>
                );
