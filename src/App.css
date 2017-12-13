@@ -13,16 +13,34 @@
      float: right;
 }
 
-.posts {
-     display: block;
-     text-decoration: none;
-     color: black;
+.posts{
+     display: flex;
      border-width: 0.5px;
-     padding: 20px;
-     margin: 10px 0;
      border-color: black;
      border-style: solid;
+     padding: 20px;
+     margin: 10px 0;
 }
+.postsContent{
+     width: 70%;
+     padding: 10px;
+}
+
+.postsLink {
+     text-decoration: none;
+     color: black;
+}
+
+.postsImage{
+     width: 30%;
+     padding: 10px;
+}
+
+.postsImage > img{
+     width: 100%;
+}
+
+
 
 .paginate{
      float: right;

@@ -63,7 +63,14 @@ class Home extends Component {
           //renders the posts in a simple list view
           const posts = this.state.hotposts.map((posts, idx)=>{
                return (
-                    <Link key={idx} to='/#' className='posts'>{posts.data.title}</Link>
+                    <div key={idx} className='posts'>
+                         <div className='postsImage'>
+                              {posts.data.thumbnail.includes('http')? <img src={posts.data.thumbnail}></img> : <img src={require('../images/no_thumbnail.png')}></img>}
+                         </div>
+                         <div className='postsContent'>
+                              <Link to='/#' className='postsLink'>{posts.data.title}</Link>
+                         </div>
+                    </div>
                );
           });
           return posts;
