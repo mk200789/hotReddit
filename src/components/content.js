@@ -32,7 +32,7 @@ class Content extends Component {
 
           var $this = this;
 
-          var postEndpoint = `https://www.reddit.com/hot.json?raw_json=1&limit=${this.state.limit}`;
+          var postEndpoint = `https://www.reddit.com/r/all/hot.json?raw_json=1&limit=${this.state.limit}`;
 
           if (page !== undefined){
 
