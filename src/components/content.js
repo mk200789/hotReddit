@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 
-class Home extends Component {
+
+class Content extends Component {
      constructor(props){
           super(props)
           this.state = {
@@ -10,13 +11,19 @@ class Home extends Component {
                nextPage: null,
                beforePage: [],
                error: false,
+               limit: 5,
           }
      }
      componentWillMount =()=>{
-          this.getHotReddit();
+          if (Object.keys(this.props.match.params).length > 1){
+               this.getHotReddit(this.props.match.params[1], this.props.match.params[0], this.props.match.params[2])
+          }else{
+               this.getHotReddit();
+          }
      }
 
-     getHotReddit = (page, direction) =>{
+
+     getHotReddit = (page, direction, count) =>{
           /*
            * Retrieves the Hottest Reddit posts using Reddit's /hot endpoint.
            *` page`       : describes the page were going to based on its fullname of that reddit page
@@ -25,23 +32,13 @@ class Home extends Component {
 
           var $this = this;
 
-          // var postEndpoint = 'https://www.reddit.com/hot.json?limit=5&';
-          var postEndpoint = 'https://www.reddit.com/hot.json?';
+          var postEndpoint = `https://www.reddit.com/hot.json?raw_json=1&limit=${this.state.limit}`;
 
-          var  beforePage = this.state.beforePage;
-          
-          if (direction === 'after'){
-               beforePage.push(this.state.nextPage);
-          }
-
-          console.log(beforePage.length);
           if (page !== undefined){
-               if (beforePage.length > 0){
-                    postEndpoint = `${postEndpoint}${direction}=${page}`;
-               }
+
+               postEndpoint = `${postEndpoint}&${direction}=${page}&count=5`;
           }
 
-          console.log(postEndpoint);
 
           axios.get(postEndpoint)
           .then(function(response){
@@ -49,13 +46,7 @@ class Home extends Component {
 
                window.scrollTo(0,0);
 
-               if (direction === 'before'){
-                    console.log("before", page);
-                    $this.setState({hotposts: posts.children, nextPage: page, beforePage: beforePage});
-               }else{
-                    console.log("after", posts.after);
-                    $this.setState({hotposts: posts.children, nextPage: posts.after, beforePage: beforePage});
-               }
+               $this.setState({hotposts: posts.children, nextPage: posts.after, beforePage: posts.before });
 
           })
           .catch(function(error){
@@ -68,13 +59,14 @@ class Home extends Component {
           const posts = this.state.hotposts.map((posts, idx)=>{
                return (
                     <div key={idx} className='posts'>
-                         <div className='postsScore'>
+                         <div className='posts-score'>
+                              <div className='posts-score-name'>Score</div>
                               <p>{posts.data.score}</p>
                          </div>
-                         <div className='postsImage'>
+                         <div className='posts-image'>
                               {posts.data.thumbnail.includes('http')? <img src={posts.data.thumbnail} alt='thumbnail'></img> : <img src={require('../images/no_thumbnail.png')} alt='thumbnail'></img>}
                          </div>
-                         <div className='postsContent'>
+                         <div className='posts-content'>
                               <Link to={`/posts=${posts.data.id}`} className='postsLink'>{posts.data.title}</Link>
                          </div>
                     </div>
@@ -83,37 +75,33 @@ class Home extends Component {
           return posts;
      }
 
-     paginate = (direction) => {
-          //paginating the pages of hot posts in either direction before/after
-          if (direction === 'before'){
-               var  beforePage = this.state.beforePage;
-               var nextPage = beforePage.pop();
-               this.getHotReddit(nextPage, 'before');
-          }else{
-               this.getHotReddit(this.state.nextPage, 'after');
-          }
-     }
-
      render = () =>{
-          console.log("rendering", this.state);
+
           if (this.state.hotposts === null){
                return(
-                    <div className='home' style={{textAlign: 'center', marginTop: 40}}>
+                    <div className='home load'>
                          Loading ...
                     </div>
                )
           }
+
           return(
                <div className='home'>
                     {this.renderHotPosts()}
 
                     <div className='paginate'>
-                         {this.state.beforePage.length > 0 ? <div className='before' onClick={()=>this.paginate('before')}>Before</div>: <div className='before none'>Before</div>}
-                         <div className='next' onClick={() => this.paginate('after')}>Next</div>
+                         {
+                              this.state.beforePage ?
+                                    <a className='before' href={`/before=${this.state.beforePage}`}>Before</a>: ''
+                          }
+                          <a className='next' href={`/after=${this.state.nextPage}`} >Next</a>
                     </div>
+
                </div>
           );
+
+
      }
 };
 
-export default Home;
+export default Content;

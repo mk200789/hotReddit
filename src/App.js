@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
 
-import Home from './components/home.js';
-import Menu from './components/menu.js';
-import Post from './components/post.js';
+import Menu         from './components/menu.js';
+import Post         from './components/post.js';
+import Content      from './components/content.js';
 
 import './App.css';
+
 
 class App extends Component {
      render() {
           return (
                <Router>
+
                     <div className='app'>
 
                          <Menu />
 
                          <Switch>
-                              <Route exact path="/" component={Home}/>
-                              <Route exact path="/posts=([a-zA-z0-9]*)" component={Post} />
+
+                              <Route exact path='/' component={Content}/>
+
+                              <Route exact path='/posts=([a-zA-Z0-9]*)' component={Post} />
+
+                              <Route exact path='/(after|before)=([_a-zA-Z0-9]*)' component={Content} />
+
+                              <Route render={()=>{return <Redirect to='/' />}} />
+
                          </Switch>
+
                     </div>
+
                </Router>
           );
      }
